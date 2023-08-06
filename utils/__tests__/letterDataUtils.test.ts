@@ -1,4 +1,3 @@
-import { filter } from "lodash";
 import { CurrentLetterDataType, LetterDataType } from "../../types/solverTypes";
 import { filterWords, transformCurrentLetterData } from "../letterDataUtils";
 
