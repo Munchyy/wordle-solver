@@ -1,5 +1,4 @@
-import intersection from "lodash/intersection";
-export const getLetterCounts = (wordList, currentWord = "") => {
+const getLetterCounts = (wordList, currentWord = "") => {
   const counts = wordList.reduce(
     (acc, curr) => {
       curr.split("").forEach((character) => {
@@ -17,7 +16,7 @@ export const getLetterCounts = (wordList, currentWord = "") => {
       });
       return acc;
     },
-    { max: "n/a" }
+    { max: "n/a" },
   );
   return counts;
 };
@@ -33,7 +32,7 @@ export const getBestValid = (wordList) => {
     (acc, word) => {
       const wordWeight = [...new Set(word.split(""))].reduce(
         (acc, curr) => acc + letterCounts[curr],
-        0
+        0,
       );
       acc[word] = wordWeight;
       if (wordWeight === acc.max) {
@@ -44,79 +43,7 @@ export const getBestValid = (wordList) => {
       }
       return acc;
     },
-    { max: -1, wordList: [] }
+    { max: -1, wordList: [] },
   );
   return weights.wordList[0] ?? "";
-};
-
-/**
- * Calculate the best possible word to guess given the grey/yellow/green values
- * @param {string[]} wordList
- * @param {Record<string, { green: number[], yellow: number[], invalid: Boolean}>} letterData
- * @returns The best word to guess, ERROR if something went wrong
- */
-export const getBestGuess = (wordList, letterData) => {
-  let validWords = wordList;
-  Object.entries(letterData);
-  const invalidLetters = [
-    ...new Set(
-      Object.entries(letterData)
-        .filter(([k, v]) => v.invalid)
-        .map(([k, v]) => k)
-    ),
-  ];
-  validWords = validWords.filter(
-    (word) => !intersection(invalidLetters, word.split("")).length
-  );
-  validWords = doFilter(letterData, validWords, "green", wordContainsAllGreens);
-  validWords = doFilter(
-    letterData,
-    validWords,
-    "yellow",
-    wordContainsAllYellows
-  );
-
-  return [getBestValid(validWords) || "error", validWords];
-};
-
-const doFilter = (letterData, validWords, arr, filterFunction) => {
-  const filterData = Object.entries(letterData)
-    .filter(([k, v]) => v[arr].length)
-    .reduce((acc, [char, data]) => {
-      acc[char] = data[arr];
-      return acc;
-    }, {});
-
-  return validWords.filter((word) =>
-    filterFunction(word, validWords, filterData)
-  );
-};
-
-const wordContainsAllGreens = (word, validWords, greens) => {
-  const greenArr = Object.entries(greens);
-  for (let i = 0; i < greenArr.length; i += 1) {
-    const [char, indexes] = greenArr[i];
-    for (let j = 0; j < indexes.length; j += 1) {
-      if (word[indexes[j]] !== char) {
-        return false;
-      }
-    }
-  }
-  return true;
-};
-
-const wordContainsAllYellows = (word, validWords, yellows) => {
-  const yellowArr = Object.entries(yellows);
-  for (let i = 0; i < yellowArr.length; i += 1) {
-    const [char, indexes] = yellowArr[i];
-    if (!word.includes(char)) {
-      return false;
-    }
-    for (let j = 0; j < indexes.length; j += 1) {
-      if (word[indexes[j]] === char) {
-        return false;
-      }
-    }
-  }
-  return true;
 };

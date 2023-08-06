@@ -25,7 +25,7 @@ const LetterTile = ({ children, status }) => {
 
   const styles = useMemo(
     () => getStyles(Math.floor(width / 6), status),
-    [width, status]
+    [width, status],
   );
   return (
     <View style={styles.tile}>

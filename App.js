@@ -1,9 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import LetterTile from "./components/LetterTile";
-import Word from "./components/Word";
 import Solver from "./components/Solver";
-import { useState } from "react";
+import { SolverProvider } from "./SolverContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -14,12 +12,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const letters = ["a", "b", "c", "d", "e", "f", "g"];
 export default function App() {
-  const [counter, setCounter] = useState(0);
   return (
-    <View style={styles.container}>
-      <Solver />
-    </View>
+    <SolverProvider>
+      <View style={styles.container}>
+        <Solver />
+      </View>
+    </SolverProvider>
   );
 }
